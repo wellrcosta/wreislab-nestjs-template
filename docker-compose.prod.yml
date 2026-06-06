@@ -1,8 +1,7 @@
 services:
-  api:
+  template-nestjs:
     image: ghcr.io/wellrcosta/wreislab-nestjs-template:latest
-    networks:
-      - dokploy-network
+    restart: unless-stopped
     environment:
       NODE_ENV: production
       PORT: "3000"
@@ -20,16 +19,5 @@ services:
       test: ["CMD", "node", "-e", "require('http').get('http://127.0.0.1:3000/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"]
       interval: 30s
       timeout: 10s
-      retries: 3
-      start_period: 20s
-    deploy:
-      labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.wreislab-api.rule=Host(`${APP_DOMAIN}`)"
-        - "traefik.http.routers.wreislab-api.entrypoints=websecure"
-        - "traefik.http.routers.wreislab-api.tls=true"
-        - "traefik.http.services.wreislab-api.loadbalancer.server.port=3000"
-
-networks:
-  dokploy-network:
-    external: true
+      retries: 2
+      start_period: 10s
