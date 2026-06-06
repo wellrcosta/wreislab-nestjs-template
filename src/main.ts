@@ -19,7 +19,9 @@ async function bootstrap() {
     contentSecurityPolicy: false,
   });
 
-  const corsOrigin = process.env.CORS_ORIGIN ?? 'http://localhost:5173';
+  const corsOriginEnv = process.env.CORS_ORIGIN ?? 'http://localhost:5173';
+  // '*' + credentials: true is rejected by browsers; reflect request Origin instead
+  const corsOrigin = corsOriginEnv === '*' ? true : corsOriginEnv;
   app.enableCors({
     origin: corsOrigin,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
@@ -46,7 +48,8 @@ async function bootstrap() {
   const logger = app.get(Logger);
   logger.log(`Application running on port ${port}`, 'Bootstrap');
   if (process.env.SWAGGER_ENABLED !== 'false') {
-    logger.log(`Swagger UI: http://localhost:${port}/docs`, 'Bootstrap');
+    const appUrl = process.env.APP_URL ?? `http://localhost:${port}`;
+    logger.log(`Swagger UI: ${appUrl}/docs`, 'Bootstrap');
   }
 }
 

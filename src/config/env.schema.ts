@@ -12,6 +12,7 @@ export const envSchema = Joi.object({
     .default('info'),
 
   CORS_ORIGIN: Joi.string().default('http://localhost:5173'),
+  APP_URL: Joi.string().uri().optional(),
 
   SWAGGER_ENABLED: Joi.boolean().default(true),
   METRICS_ENABLED: Joi.boolean().default(true),
